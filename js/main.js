@@ -1,106 +1,85 @@
-// js/main.js - TechZone Tozalangan va Yangilangan Versiya (2025)
-
 class TechZoneApp {
     constructor() {
-        // Savatni localStorage'dan yuklash
-        this.cart = JSON.parse(localStorage.getItem('techzone_cart')) || [];
+        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
         this.init();
     }
 
     init() {
         this.updateCartCount();
         this.setupEventListeners();
-        // Agar sahifada mahsulotlar konteyneri bo'lsa, ularni yuklaymiz
-        if (document.getElementById('discountProducts') || document.getElementById('bestsellerProducts')) {
-            this.loadProducts();
-        }
     }
 
-    // Mahsulotlar bazasi (Buni keyinchalik API-dan olishingiz mumkin)
-    getProducts() {
-        return [
-            { id: '1', name: 'Lenovo Legion 5 Pro', price: 18000000, image: 'images/ideapad.jfif', category: 'discount' },
-            { id: '2', name: 'Samsung Odyssey G9', price: 14500000, image: 'images/samsung.jfif', category: 'discount' },
-            { id: '3', name: 'ASUS TUF RTX 4070 Ti', price: 12500000, image: 'images/rtx4070.jpg', category: 'bestseller' },
-            { id: '4', name: 'Logitech G PRO X', price: 2800000, image: 'https://images.unsplash.com/photo-1616766436940-d66838a6a6f1', category: 'bestseller' }
-        ];
-    }
-
-    // Mahsulot kartasi HTML shabloni
-    createCard(product) {
-        return `
-            <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" class="product-image">
-                <h4>${product.name}</h4>
-                <p class="current-price">${this.formatPrice(product.price)} so'm</p>
-                <button class="btn btn-primary" onclick="app.addToCart('${product.id}')">
-                    Savatga qo'shish
-                </button>
-            </div>
-        `;
-    }
-
-    loadProducts() {
-        const allProducts = this.getProducts();
-        
-        const discountDiv = document.getElementById('discountProducts');
-        const bestsellerDiv = document.getElementById('bestsellerProducts');
-
-        if (discountDiv) {
-            discountDiv.innerHTML = allProducts
-                .filter(p => p.category === 'discount')
-                .map(p => this.createCard(p)).join('');
-        }
-
-        if (bestsellerDiv) {
-            bestsellerDiv.innerHTML = allProducts
-                .filter(p => p.category === 'bestseller')
-                .map(p => this.createCard(p)).join('');
-        }
-    }
-
-    // SAVAT LOGIKASI (100% Ishlaydigan)
-    addToCart(productId) {
-        const product = this.getProducts().find(p => p.id === productId);
-        if (!product) return;
-
-        const existingItem = this.cart.find(item => item.id === productId);
-
+    addToCart(product) {
+        const existingItem = this.cart.find(item => item.name === product.name);
         if (existingItem) {
             existingItem.quantity += 1;
         } else {
-            this.cart.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image,
-                quantity: 1
-            });
+            this.cart.push({ ...product, quantity: 1 });
         }
-
         this.saveCart();
         this.updateCartCount();
-        alert(`${product.name} savatga qo'shildi!`);
+        this.showToast(`${product.name} savatga qo'shildi!`);
     }
 
     saveCart() {
-        localStorage.setItem('techzone_cart', JSON.stringify(this.cart));
+        localStorage.setItem('cart', JSON.stringify(this.cart));
     }
 
     updateCartCount() {
         const count = this.cart.reduce((sum, item) => sum + item.quantity, 0);
-        const cartBadge = document.querySelector('.cart-count');
-        if (cartBadge) cartBadge.textContent = count;
-    }
-
-    formatPrice(price) {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        const badge = document.getElementById('cartCount');
+        if (badge) badge.textContent = count;
     }
 
     setupEventListeners() {
-        // Kelajakda qo'shimcha eventlar uchun
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart')) {
+                const card = e.target.closest('.product-card');
+                const name = card.querySelector('.product-title').innerText;
+                const image = card.querySelector('.product-image').getAttribute('src');
+                
+                // Faqat klassi 'current-price' bo'lgan narxni raqam qilib olamiz
+                const priceText = card.querySelector('.current-price').innerText;
+                const price = parseInt(priceText.replace(/\D/g, ''));
+
+                this.addToCart({ name, price, image });
+            }
+        });
+    }
+
+    showToast(message) {
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.style.cssText = "background: #2ecc71; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.5s;";
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
     }
 }
 
-// Ilovani ishga tushirish
+// Toast uchun kerakli stil (hech narsa o'chmasligi uchun)
+const style = document.createElement('style');
+style.innerHTML = "#toastContainer { position: fixed; top: 20px; right: 20px; z-index: 10000; }";
+document.head.appendChild(style);
+
 const app = new TechZoneApp();
+
+// index.html dagi qidiruv inputini qidiruv sahifasiga yo'naltirish
+const homeSearchInput = document.getElementById('searchInput');
+
+if (homeSearchInput) {
+    homeSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const query = e.target.value.trim(); // Bo'sh joylarni olib tashlaymiz
+            if (query) {
+                // Qidiruv sahifasiga qidiruv so'zi bilan o'tkazamiz
+                window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            }
+        }
+    });
+}

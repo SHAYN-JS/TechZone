@@ -1,86 +1,62 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savat - TechZone</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <title>TechZone | Savatcha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<body class="bg-black text-white font-sans min-h-screen">
 
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">TechZone</a>
-
-                <div class="search-bar">
-                    <input type="text" placeholder="Mahsulotlarni qidirish..." id="searchInput">
+    <nav class="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 text-blue-500">
+                <div class="bg-blue-600/20 p-2 rounded-lg">
+                    <i class="fas fa-shopping-basket text-xl"></i> 
                 </div>
-
-                <div class="header-actions">
-                    <div class="language-selector">
-                        <button class="lang-btn active">UZ</button>
-                        <button class="lang-btn">RU</button>
-                        <button class="lang-btn">EN</button>
-                    </div>
-
-                    <a href="cart.html" class="cart-icon">
-                        🛒
-                        <span class="cart-count" id="cartCount">0</span>
-                    </a>
-
-                    <div class="auth-buttons">
-                        <a href="login.html" class="btn">Kirish</a>
-                        <a href="register.html" class="btn">Ro'yxatdan o'tish</a>
-                    </div>
-                </div>
+                <span class="text-xl font-bold tracking-tight">Tech<span class="text-white">Zone</span></span>
+            </a>
+            <div class="flex gap-6 text-sm font-medium">
+                <a href="index.html" class="hover:text-blue-500">Laptops</a>
+                <a href="index.html" class="hover:text-blue-500">Desktops</a>
+                <a href="index.html" class="hover:text-blue-500 text-blue-500 underline">Savatcha (<span id="nav-cart-count">0</span>)</a>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <section class="cart-page">
-        <div class="container">
-            <h1 class="page-title">Savatcha</h1>
+    <main class="container mx-auto my-10 px-4 max-w-5xl">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold">Savatchangiz</h1>
+            <button onclick="clearCart()" class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg transition text-sm">
+                <i class="fas fa-trash-alt mr-2"></i>Savatni tozalash
+            </button>
+        </div>
 
-            <div class="cart-content">
-                <div class="cart-items" id="cartItemsContainer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-4" id="cart-container">
                 </div>
 
-                <div class="cart-summary">
-                    <h2>Savat xulosasi</h2>
-                    <div class="summary-line">
-                        <span>Mahsulotlar narxi:</span>
-                        <span id="subtotal">0 so'm</span>
+            <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 h-fit">
+                <h2 class="text-xl font-bold mb-6">Buyurtma xulosasi</h2>
+                <div class="space-y-4 text-zinc-400">
+                    <div class="flex justify-between">
+                        <span>Jami mahsulot:</span>
+                        <span id="total-qty" class="text-white">0</span>
                     </div>
-                    <div class="summary-line">
-                        <span>Yetkazib berish:</span>
-                        <span id="deliveryCost">0 so'm</span>
+                    <div class="flex justify-between text-xl font-bold pt-4 border-t border-zinc-800">
+                        <span class="text-white">Jami:</span>
+                        <span id="total-price" class="text-blue-500">0 so'm</span>
                     </div>
-                    <div class="summary-separator"></div>
-                    <div class="summary-line total">
-                        <span>Jami:</span>
-                        <span id="totalPrice">0 so'm</span>
-                    </div>
-
-                    <button class="btn btn-checkout" onclick="cartManager.proceedToCheckout()">
-                        To'lovga o'tish
-                    </button>
-                    <a href="products.html" class="btn btn-continue-shopping">
-                        Xaridni davom ettirish
-                    </a>
                 </div>
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold mt-8 transition shadow-lg shadow-blue-900/20">
+                    To'lov qilish
+                </button>
             </div>
         </div>
-    </section>
+    </main>
 
-    <footer>
-    </footer>
-
-    <script src="js/main.js"></script>
     <script src="js/cart.js"></script>
-    <div class="toast-container" id="toastContainer"></div>
+    <script src="js/theme.js"></script>
 </body>
-
 </html>

@@ -6,9 +6,11 @@
     <title>Ro'yxatdan o'tish - TechZone</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
+    <div id="toastContainer" class="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
     <header>
         <div class="container">
             <div class="header-content">
@@ -20,7 +22,6 @@
         </div>
     </header>
 
-    <!-- Register Section -->
     <section class="auth-page">
         <div class="container">
             <div class="auth-container">
@@ -29,7 +30,7 @@
                     <p>TechZone jamoasiga qo'shiling</p>
                 </div>
 
-                <form id="registerForm">
+                <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">Ism</label>
@@ -108,7 +109,6 @@
     </section>
 
     <script src="js/auth.js"></script>
-    <!-- Toast Notification Container -->
-<div class="toast-container" id="toastContainer"></div>
+    <script src="js/theme.js"></script>
 </body>
 </html>

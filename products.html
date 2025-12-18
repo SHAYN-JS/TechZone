@@ -9,6 +9,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
+        /* Dark Mode o'zgaruvchilari */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --border-color: #dddddd;
+            --header-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --header-bg: #1a1a1a;
+            --sidebar-bg: #1e1e1e;
+        }
+
+        body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Rejimni o'zgartirish tugmasi stili */
+        #theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            outline: none;
+        }
+
         .catalog-layout {
             display: flex;
             padding: 30px 0;
@@ -23,23 +61,44 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-        /* Filterlar uchun asosiy stil */
+
+        /* Filterlar stili */
         .filter-group {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
+            background-color: var(--sidebar-bg);
         }
         .filter-group h4 {
             margin-top: 0;
             margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 5px;
         }
         .filter-group label {
             display: block;
             margin-bottom: 5px;
             font-size: 14px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        select, input[type="text"], .slider {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 5px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -54,6 +113,10 @@
                 </div>
                 
                 <div class="header-actions">
+                    <button id="theme-btn" title="Rejimni o'zgartirish">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+
                     <div class="language-selector">
                         <button class="lang-btn active">UZ</button>
                         <button class="lang-btn">RU</button>
@@ -110,8 +173,8 @@
                 
                 <div class="filter-group">
                     <h4>Narx oralig'i</h4>
-                    <input type="range" min="1000000" max="50000000" value="1000000" class="slider" id="priceRange">
-                    <p>15 000 000 so'm gacha</p>
+                    <input type="range" min="1000000" max="50000000" value="15000000" class="slider" id="priceRange" style="width: 100%;">
+                    <p id="priceValue">15 000 000 so'm gacha</p>
                 </div>
                 
                 <div class="filter-group">
@@ -174,7 +237,7 @@
                         <a href="product-detail.html?id=D4" class="btn btn-secondary quick-view">Batafsil</a>
                     </div>
                     
-                    </div>
+                </div>
                 
                 <div class="pagination-controls" style="text-align: center; margin-top: 30px;">
                     <button class="page-btn active">1</button>
@@ -238,7 +301,9 @@
             </div>
         </div>
     </footer>
+
     <script src="js/main.js"></script>
+    <script src="js/theme.js"></script>
     <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

@@ -9,6 +9,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
+        /* Dark Mode uchun qo'shimcha CSS */
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #333333;
+            --card-bg: #ffffff;
+            --sidebar-border: #ddd;
+        }
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --text-main: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --sidebar-border: #333;
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+            transition: 0.3s ease;
+        }
+
+        /* Sidebar va Filterlar dark modeda */
+        body.dark-mode .filter-group {
+            background-color: #1e1e1e;
+            border-color: #444;
+        }
+        body.dark-mode .filter-group h4 {
+            border-bottom-color: #444;
+            color: #fff;
+        }
+
+        /* Mahsulot kartochkalari dark modeda */
+        body.dark-mode .product-card {
+            background-color: var(--card-bg) !important;
+            border: 1px solid #333;
+        }
+        body.dark-mode .product-title { color: #fff; }
+        body.dark-mode .product-price { color: #4caf50; }
+
         .catalog-layout {
             display: flex;
             padding: 30px 0;
@@ -23,7 +62,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-        /* Filterlar uchun asosiy stil */
         .filter-group {
             margin-bottom: 20px;
             padding: 15px;
@@ -41,6 +79,18 @@
             margin-bottom: 5px;
             font-size: 14px;
         }
+
+        /* Dark Mode tugmasi stili */
+        #theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            color: inherit;
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +104,10 @@
                 </div>
                 
                 <div class="header-actions">
+                    <button id="theme-btn" title="Rejimni o'zgartirish">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+
                     <div class="language-selector">
                         <button class="lang-btn active">UZ</button>
                         <button class="lang-btn">RU</button>
@@ -246,6 +300,29 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        if (localStorage.getItem('dark-mode') === 'active') {
+            body.classList.add('dark-mode');
+            if(themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                const isActive = body.classList.contains('dark-mode');
+                if(themeIcon) {
+                    themeIcon.classList.replace(isActive ? 'fa-moon' : 'fa-sun', isActive ? 'fa-sun' : 'fa-moon');
+                }
+                localStorage.setItem('dark-mode', isActive ? 'active' : 'inactive');
+            });
+        }
+    </script>
+
     <script src="js/main.js"></script>
     <div class="toast-container" id="toastContainer"></div>
 </body>

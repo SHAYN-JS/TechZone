@@ -9,37 +9,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        .catalog-layout {
-            display: flex;
-            padding: 30px 0;
+        /* Dark Mode va Katalog uchun maxsus stillar */
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #333333;
+            --card-bg: #ffffff;
+            --filter-bg: #f9f9f9;
+            --border-color: #ddd;
         }
-        .sidebar {
-            width: 25%;
-            padding-right: 20px;
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --text-main: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --filter-bg: #1e1e1e;
+            --border-color: #333;
         }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+            transition: 0.3s ease;
+        }
+
+        .catalog-layout { display: flex; padding: 30px 0; }
+        .sidebar { width: 25%; padding-right: 20px; }
+        
+        /* Filterlar stili */
+        .filter-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--filter-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
         .product-list {
             width: 75%;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-        /* Filterlar uchun asosiy stil */
-        .filter-group {
-            margin-bottom: 20px;
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
+            transition: transform 0.3s;
         }
-        .filter-group h4 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+
+        .product-card:hover { transform: translateY(-5px); }
+
+        /* Dark Mode tugmasi */
+        #theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            color: inherit;
+            display: flex;
+            align-items: center;
         }
-        .filter-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
+
+        select, input[type="text"] {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -54,20 +93,21 @@
                 </div>
                 
                 <div class="header-actions">
+                    <button id="theme-btn" title="Rejimni o'zgartirish">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+
                     <div class="language-selector">
                         <button class="lang-btn active">UZ</button>
                         <button class="lang-btn">RU</button>
-                        <button class="lang-btn">EN</button>
                     </div>
                     
                     <a href="cart.html" class="cart-icon">
-                        🛒
-                        <span class="cart-count" id="cartCount">0</span>
+                        🛒 <span class="cart-count" id="cartCount">0</span>
                     </a>
                     
                     <div id="authButtons" class="auth-buttons">
                         <a href="login.html" class="btn">Kirish</a>
-                        <a href="register.html" class="btn">Ro'yxatdan o'tish</a>
                     </div>
                 </div>
             </div>
@@ -89,7 +129,7 @@
     <section class="page-title-section">
         <div class="container">
             <h1>Monitorlar</h1>
-            <p>Gaming, ofis va professional ishlar uchun turli o'lchamdagi va texnologiyali monitorlar.</p>
+            <p>Gaming, ofis va professional ishlar uchun eng sara monitorlar.</p>
         </div>
     </section>
 
@@ -104,33 +144,15 @@
                     <label><input type="checkbox" name="size" value="24"> 24"</label>
                     <label><input type="checkbox" name="size" value="27"> 27"</label>
                     <label><input type="checkbox" name="size" value="32"> 32"</label>
-                    <label><input type="checkbox" name="size" value="other"> 34" va katta</label>
-                </div>
-                
-                <div class="filter-group">
-                    <h4>Yangilanish chastotasi (Hz)</h4>
-                    <label><input type="checkbox" name="refresh" value="60"> 60/75 Hz</label>
-                    <label><input type="checkbox" name="refresh" value="144"> 144 Hz</label>
-                    <label><input type="checkbox" name="refresh" value="240"> 240 Hz va yuqori</label>
                 </div>
                 
                 <div class="filter-group">
                     <h4>Panel turi</h4>
-                    <select name="panel_type">
+                    <select name="panel_type" style="width: 100%;">
                         <option value="">Barchasi</option>
                         <option value="ips">IPS</option>
                         <option value="va">VA</option>
                         <option value="oled">OLED</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <h4>Ruxsat (Resolution)</h4>
-                    <select name="resolution">
-                        <option value="">Barchasi</option>
-                        <option value="fhd">Full HD (1920x1080)</option>
-                        <option value="qhd">QHD (2560x1440)</option>
-                        <option value="4k">4K (3840x2160)</option>
                     </select>
                 </div>
                 
@@ -144,113 +166,71 @@
                         <option value="popular">Mashhurlikka ko'ra</option>
                         <option value="price_asc">Narxi (O'sish)</option>
                         <option value="price_desc">Narxi (Kamayish)</option>
-                        <option value="new">Yangi</option>
                     </select>
                 </div>
 
                 <div class="products-grid product-list" id="monitorProducts">
-                    
                     <div class="product-card">
                         <img src="./images/samsung.jfif" alt="Samsung Monitor" class="product-image">
                         <h4 class="product-title">Samsung Odyssey G5 (27")</h4>
-                        <p class="product-specs">27" | QHD | 144Hz | Kauchuk (Curved)</p>
+                        <p class="product-specs">27" | QHD | 144Hz | Curved</p>
                         <p class="product-price">4 800 000 so'm</p>
                         <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
-                        <a href="product-detail.html" class="btn btn-secondary quick-view">Batafsil</a>
                     </div>
                     
                     <div class="product-card">
                         <img src="./images/imageeeee.jfif" alt="Dell Monitor" class="product-image">
                         <h4 class="product-title">Dell UltraSharp U2422H</h4>
-                        <p class="product-specs">24" | FHD | 60Hz | IPS | Professional</p>
+                        <p class="product-specs">24" | FHD | 60Hz | IPS</p>
                         <p class="product-price">3 100 000 so'm</p>
                         <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
-                        <a href="product-detail.html" class="btn btn-secondary quick-view">Batafsil</a>
                     </div>
-                    
+
                     <div class="product-card">
                         <img src="images/yangi.jfif" alt="LG 4K Monitor" class="product-image">
                         <h4 class="product-title">LG UltraFine 32UL750-W</h4>
-                        <p class="product-specs">32" | 4K | 60Hz | HDR | USB-C</p>
+                        <p class="product-specs">32" | 4K | 60Hz | HDR</p>
                         <p class="product-price">9 500 000 so'm</p>
                         <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
-                        <a href="product-detail.html" class="btn btn-secondary quick-view">Batafsil</a>
                     </div>
-                    
-                    <div class="product-card">
-                        <img src="images/yanig2.jfif" alt="Budget Monitor" class="product-image">
-                        <h4 class="product-title">HP M24fwa (Oq)</h4>
-                        <p class="product-specs">24" | FHD | 75Hz | IPS | Oq korpus</p>
-                        <p class="product-price">2 100 000 so'm</p>
-                        <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
-                        <a href="product-detail.html" class="btn btn-secondary quick-view">Batafsil</a>
-                    </div>
-                    
-                    </div>
-                
-                <div class="pagination-controls" style="text-align: center; margin-top: 30px;">
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <button class="page-btn">Keyingi &raquo;</button>
                 </div>
             </section>
         </div>
     </main>
-    
+
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>TechZone</h3>
-                    <p>Eng yangi va eng sifatli texnologiya mahsulotlari faqat bizda. O'zingizga mos kompyuter tizimini yig'ing!</p>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/profile.php?id=100076328040599&locale=ru_RU" class="social-icon">📘</a>
-                        <a href="https://www.instagram.com/shayn_top/" class="social-icon">📷</a>
-                        <a href="#" class="social-icon">✈️</a>
-                        <a href="#" class="social-icon">📱</a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Kategoriyalar</h3>
-                    <ul class="footer-links">
-                        <li><a href="laptops.html">Noutbuklar</a></li>
-                        <li><a href="desktops.html">Sistem bloklar</a></li>
-                        <li><a href="monitors.html">Monitorlar</a></li>
-                        <li><a href="gpu.html">Videokartalar</a></li>
-                        <li><a href="storage.html">SSD va HDD</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Foydali havolalar</h3>
-                    <ul class="footer-links">
-                        <li><a href="about.html">Biz haqimizda</a></li>
-                        <li><a href="delivery.html">Yetkazib berish</a></li>
-                        <li><a href="payment.html">To'lov usullari</a></li>
-                        <li><a href="credit.html">Kredit</a></li>
-                        <li><a href="warranty.html">Kafolat</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Aloqa</h3>
-                    <ul class="footer-links">
-                        <li>📍 Toshkent sh., Yunusobod tumani</li>
-                        <li>📞 +998 90 123 45 67</li>
-                        <li>✉️ info@techzone.uz</li>
-                        <li>🕒 Dushanba - Yakshanba: 9:00 - 20:00</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="copyright">
+            <div class="copyright" style="padding: 20px 0; text-align: center; border-top: 1px solid var(--border-color);">
                 &copy; 2025 TechZone. Barcha huquqlar himoyalangan.
             </div>
         </div>
     </footer>
+
+    <script>
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // Sahifa yuklanganda holatni tekshirish
+        if (localStorage.getItem('dark-mode') === 'active') {
+            body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isActive = body.classList.contains('dark-mode');
+            
+            if(isActive) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('dark-mode', 'active');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('dark-mode', 'inactive');
+            }
+        });
+    </script>
+
     <script src="js/main.js"></script>
-    <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

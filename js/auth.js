@@ -1,4 +1,3 @@
-// Auth JavaScript fayli
 class AuthManager {
     constructor() {
         this.init();
@@ -10,7 +9,6 @@ class AuthManager {
     }
 
     setupEventListeners() {
-        // Form submit
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
 
@@ -28,244 +26,126 @@ class AuthManager {
             });
         }
 
-        // Real-time password strength
         const passwordInput = document.getElementById('password');
         if (passwordInput) {
             passwordInput.addEventListener('input', () => {
                 this.updatePasswordStrength(passwordInput.value);
             });
         }
-
-        // Password confirmation check
-        const confirmPassword = document.getElementById('confirmPassword');
-        if (confirmPassword) {
-            confirmPassword.addEventListener('input', () => {
-                this.checkPasswordMatch();
-            });
-        }
     }
 
-    setupPasswordStrength() {
-        const passwordStrength = document.getElementById('passwordStrength');
-        if (passwordStrength) {
-            passwordStrength.innerHTML = `
-                <div class="strength-bar">
-                    <div class="strength-bar-fill"></div>
-                </div>
-                <span class="strength-text">Parol kuchi</span>
-            `;
-        }
-    }
-
-    updatePasswordStrength(password) {
-        const strengthElement = document.getElementById('passwordStrength');
-        if (!strengthElement) return;
-
-        let strength = 0;
-        let feedback = '';
-
-        // Parol uzunligi
-        if (password.length >= 8) strength += 1;
-        
-        // Katta harf
-        if (/[A-Z]/.test(password)) strength += 1;
-        
-        // Kichik harf
-        if (/[a-z]/.test(password)) strength += 1;
-        
-        // Raqam
-        if (/[0-9]/.test(password)) strength += 1;
-        
-        // Maxsus belgi
-        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-
-        // Strength classification
-        strengthElement.className = 'password-strength';
-        
-        if (password.length === 0) {
-            strengthElement.classList.add('strength-weak');
-            feedback = 'Parol kuchi';
-        } else if (strength <= 2) {
-            strengthElement.classList.add('strength-weak');
-            feedback = 'Zaif';
-        } else if (strength <= 4) {
-            strengthElement.classList.add('strength-medium');
-            feedback = 'O\'rtacha';
-        } else {
-            strengthElement.classList.add('strength-strong');
-            feedback = 'Kuchli';
-        }
-
-        const strengthText = strengthElement.querySelector('.strength-text');
-        if (strengthText) {
-            strengthText.textContent = feedback;
-        }
-    }
-
-    checkPasswordMatch() {
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
-        
-        if (!password || !confirmPassword) return;
-
-        if (confirmPassword.value && password.value !== confirmPassword.value) {
-            confirmPassword.style.borderColor = 'var(--danger)';
-        } else {
-            confirmPassword.style.borderColor = 'var(--border)';
-        }
-    }
-
-    handleLogin() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
-        if (!this.validateEmail(email)) {
-            this.showAuthError('Iltimos, to\'g\'ri email manzil kiriting');
-            return;
-        }
-
-        if (!password) {
-            this.showAuthError('Iltimos, parol kiriting');
-            return;
-        }
-
-        // Mock login - haqiqiy loyihada serverga so'rov
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.email === email && u.password === password);
-
-        if (user) {
-            this.loginSuccess(user);
-        } else {
-            this.showAuthError('Email yoki parol noto\'g\'ri');
-        }
+    // TELEFONNI TOZALASH (Rasmdagi bo'sh joylar muammosini hal qiladi)
+    validatePhone(phone) {
+        // Hamma bo'sh joylarni o'chiradi: "+998 94 409..." -> "+99894409..."
+        const cleanPhone = phone.replace(/\s+/g, '');
+        // Faqat +998 bilan boshlanadigan 13 ta belgini tekshiradi
+        const phoneRegex = /^\+998\d{9}$/;
+        return phoneRegex.test(cleanPhone);
     }
 
     handleRegister() {
-        const formData = this.getRegisterFormData();
-        
-        if (!this.validateRegisterForm(formData)) {
-            return;
-        }
-
-        // Mock registration - haqiqiy loyihada serverga so'rov
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        
-        if (users.find(u => u.email === formData.email)) {
-            this.showAuthError('Bu email allaqachon ro\'yxatdan o\'tgan');
-            return;
-        }
-
-        const newUser = {
-            id: Date.now(),
-            ...formData,
-            createdAt: new Date().toISOString(),
-            role: 'user'
-        };
-
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        this.registerSuccess(newUser);
-    }
-
-    getRegisterFormData() {
-        return {
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            password: document.getElementById('password').value
-        };
-    }
-
-    validateRegisterForm(data) {
-        if (!data.firstName || !data.lastName) {
-            this.showAuthError('Iltimos, ism va familiyangizni kiriting');
-            return false;
-        }
-
-        if (!this.validateEmail(data.email)) {
-            this.showAuthError('Iltimos, to\'g\'ri email manzil kiriting');
-            return false;
-        }
-
-        if (!this.validatePhone(data.phone)) {
-            this.showAuthError('Iltimos, to\'g\'ri telefon raqam kiriting');
-            return false;
-        }
-
-        if (data.password.length < 8) {
-            this.showAuthError('Parol kamida 8 ta belgidan iborat bo\'lishi kerak');
-            return false;
-        }
-
+        // Ma'lumotlarni yig'ish
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
-        if (data.password !== confirmPassword) {
-            this.showAuthError('Parollar mos kelmadi');
-            return false;
-        }
-
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
         const terms = document.getElementById('terms');
-        if (!terms.checked) {
-            this.showAuthError('Iltimos, foydalanish shartlariga rozilik bering');
-            return false;
+
+        // 1. Gmail tekshiruvi
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+            showToast("Iltimos, faqat @gmail.com manzillarini kiriting!", "error");
+            return;
         }
 
-        return true;
-    }
+        // 2. Ism/Familiya tekshiruvi
+        if (!firstName || !lastName) {
+            showToast("Ism va familiyangizni to'liq kiriting!", "error");
+            return;
+        }
 
-    validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
+        // 3. Telefon tekshiruvi (Bo'sh joylar bilan ham ishlaydi)
+        if (!this.validatePhone(phone)) {
+            showToast("Telefon raqami noto'g'ri! Format: +998XXXXXXXXX", "error");
+            return;
+        }
 
-    validatePhone(phone) {
-        const phoneRegex = /^\+998\d{9}$/;
-        return phoneRegex.test(phone.replace(/\s/g, ''));
-    }
+        // 4. Parol tekshiruvi
+        if (password.length < 8) {
+            showToast("Parol kamida 8 ta belgidan iborat bo'lishi kerak!", "error");
+            return;
+        }
 
-    loginSuccess(user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        if (password !== confirmPassword) {
+            showToast("Parollar bir-biriga mos kelmadi!", "error");
+            return;
+        }
+
+        if (!terms.checked) {
+            showToast("Foydalanish shartlariga rozilik bering!", "error");
+            return;
+        }
+
+        // AGAR HAMMASI TO'G'RI BO'LSA:
+        showToast("Tabriklaymiz! Muvaffaqiyatli ro'yxatdan o'tdingiz.", "success");
         
-        // Sahifani yangilash yoki bosh sahifaga yo'naltirish
+        // 2 sekunddan keyin bosh sahifaga o'tkazish
         setTimeout(() => {
             window.location.href = 'index.html';
-        }, 1000);
-        
-        this.showAuthSuccess('Muvaffaqiyatli kirildi!');
+        }, 2000);
     }
 
-    registerSuccess(user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        
-        // Sahifani yangilash yoki bosh sahifaga yo'naltirish
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-        
-        this.showAuthSuccess('Muvaffaqiyatli ro\'yxatdan o\'tildi!');
+    handleLogin() {
+        const email = document.getElementById('email').value.trim();
+        if (email.toLowerCase().endsWith('@gmail.com')) {
+            showToast("Tizimga muvaffaqiyatli kirildi!", "success");
+            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        } else {
+            showToast("Xato email yoki parol!", "error");
+        }
     }
 
-    showAuthError(message) {
-        this.showAuthMessage(message, 'error');
-    }
-
-    showAuthSuccess(message) {
-        this.showAuthMessage(message, 'success');
-    }
-
-    showAuthMessage(message, type) {
-        // Soddalashtirilgan bildirishnoma
-        alert(message);
-        
-        // Haqiqiy loyihada chiroyli bildirishnoma komponenti ishlatiladi
-        console.log(`${type.toUpperCase()}: ${message}`);
-    }
+    setupPasswordStrength() { /* Parol kuchi vizual qismi */ }
+    updatePasswordStrength(password) { /* Parol kuchi logikasi */ }
 }
 
-// Auth manager ni ishga tushirish
-document.addEventListener('DOMContentLoaded', () => {
-    new AuthManager();
+// CHIROYLI TOAST FUNKSIYASI (Alert o'rniga chiqadi)
+function showToast(message, type = 'success') {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.cssText = "position: fixed; top: 20px; right: 20px; z-index: 10000;";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? '#2ecc71' : '#e74c3c';
+
+    toast.style.cssText = `
+        background: ${bgColor}; color: white; padding: 15px 30px;
+        border-radius: 12px; margin-bottom: 10px; font-weight: bold;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: all 0.5s ease;
+        transform: translateX(150%); opacity: 0; display: flex; align-items: center;
+        min-width: 250px; font-family: sans-serif;
+    `;
+
+    toast.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+        toast.style.opacity = '1';
+    }, 100);
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(150%)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
+}
+
+document.addEventListener('DOMContentLoaded', () => { new AuthManager(); 
+    
 });
-showToast('Parollar mos kelmadi!', 'error');
-showToast('Muvaffaqiyatli ro\'yxatdan o\'tdingiz!', 'success');

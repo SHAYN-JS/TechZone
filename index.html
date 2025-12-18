@@ -8,6 +8,83 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #333333;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --text-main: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --header-bg: #1f1f1f;
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+            transition: 0.3s ease;
+        }
+
+        body.dark-mode header {
+            background-color: var(--header-bg) !important;
+        }
+
+        body.dark-mode .product-card,
+        body.dark-mode .category-card {
+            background-color: var(--card-bg) !important;
+            border: 1px solid #333;
+        }
+
+        body.dark-mode .section-title {
+            color: #fff;
+        }
+
+        body.dark-mode .product-title {
+            color: #fff;
+        }
+
+#theme-btn {
+    color: var(--text-main) !important;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1001;
+}
+body.dark-mode #theme-icon {
+    color: #ffce00 !important; /* Quyoshcha sariq rangda */
+}
+
+        #theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+        
+
+        .toast {
+            background: #1f1f1f;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
 </head>
 
 <body>
@@ -22,6 +99,10 @@
                 </div>
 
                 <div class="header-actions">
+                    <button id="theme-btn" title="Rejimni o'zgartirish">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+
                     <div class="language-selector">
                         <button class="lang-btn active" data-lang="UZ">UZ</button>
                         <button class="lang-btn" data-lang="RU">RU</button>
@@ -57,7 +138,8 @@
         <div class="container">
 
             <section class="hero-section" style="margin-bottom: 40px;">
-                <img src="logo images/electronics-store-facebook-cover-template_23-2151173109.avif" alt="Asosiy Aksiya Banneri" style="width:110%; border-radius: 10px;">
+                <img src="logo images/techzone2.jpg" alt="Asosiy Aksiya Banneri"
+                    style="width:100%; border-radius: 0px;">
             </section>
 
             <section class="products-section" id="specialOffersSection">
@@ -70,17 +152,18 @@
                 <div class="products-grid" id="discountProducts">
 
                     <div class="product-card">
-                        <img src="images/aksiya_laptop.jpg" alt="Aksiyadagi Noutbuk" class="product-image">
+                        <img src="images//nogiron.jfif" alt="Aksiyadagi Noutbuk" class="product-image">
                         <h4 class="product-title">Acer Predator Helios 300</h4>
                         <p class="product-specs">i7 | 16GB | RTX 3060</p>
                         <p class="product-price"><del style="color: var(--text-secondary);">15 000 000 so'm</del> <span
                                 style="color: var(--accent); font-weight: bold;">12 500 000 so'm</span></p>
+
                         <button class="btn btn-primary add-to-cart" data-i18n="add_to_cart_btn">Savatga
                             qo'shish</button>
                     </div>
 
                     <div class="product-card">
-                        <img src="images/aksiya_monitor.jpg" alt="Aksiyadagi Monitor" class="product-image">
+                        <img src="images/samsung.jfif" alt="Aksiyadagi Monitor" class="product-image">
                         <h4 class="product-title">Samsung Odyssey G7</h4>
                         <p class="product-specs">32" | 240Hz | QHD</p>
                         <p class="product-price"><del style="color: var(--text-secondary);">7 000 000 so'm</del> <span
@@ -268,7 +351,8 @@
                         <a href="https://www.facebook.com/profile.php?id=100076328040599&locale=ru_RU"
                             class="social-icon">📘</a>
                         <a href="https://www.instagram.com/shayn_top/" class="social-icon">📷</a>
-                        <a href="#" class="social-icon">✈️</a>
+                        <a href="https://github.com/SHAYN-JS/TechZone?tab=readme-ov-file#readme"
+                            class="social-icon">✈️</a>
                         <a href="#" class="social-icon">📱</a>
                     </div>
                 </div>
@@ -311,7 +395,122 @@
             </div>
         </div>
     </footer>
-    <script src="js/main.js"></script>
+
+<div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeBtn = document.getElementById('theme-btn');
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            const cartCountBadge = document.getElementById('cartCount');
+
+            // --- 1. DARK MODE LOGIKASI ---
+            function applyTheme(mode) {
+                if (mode === 'active') {
+                    body.classList.add('dark-mode');
+                    themeIcon.className = 'fas fa-sun';
+                    themeIcon.style.color = '#ffce00'; // Quyoshcha rangi
+                } else {
+                    body.classList.remove('dark-mode');
+                    themeIcon.className = 'fas fa-moon';
+                    themeIcon.style.color = ''; // Asl rangi
+                }
+            }
+
+            // Sahifa yuklanganda holatni tiklash
+            const savedTheme = localStorage.getItem('dark-mode') || 'inactive';
+            applyTheme(savedTheme);
+
+            themeBtn.addEventListener('click', () => {
+                const isDark = body.classList.toggle('dark-mode');
+                const mode = isDark ? 'active' : 'inactive';
+                localStorage.setItem('dark-mode', mode);
+                applyTheme(mode);
+            });
+
+
+            // --- 2. TOAST (XABARNOMA) FUNKSIYASI ---
+            function showToast(productName) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                
+                // Toast stili (3 soniya turishi uchun)
+                toast.style.cssText = `
+                    background: #1f1f1f;
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    border-left: 5px solid #3b82f6;
+                    margin-top: 10px;
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+                    font-family: sans-serif;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 250px;
+                    animation: slideIn 0.4s ease forwards;
+                    opacity: 1;
+                    transition: opacity 0.5s ease;
+                `;
+                
+                toast.innerHTML = `<span>✅</span> <div><b>${productName}</b> <br> savatga qo'shildi!</div>`;
+                container.appendChild(toast);
+
+                // 3 soniya ko'rsatib turish
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000); 
+            }
+
+
+            // --- 3. SAVAT LOGIKASI ---
+            function updateCartCount() {
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const total = cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+                if (cartCountBadge) cartCountBadge.innerText = total;
+            }
+
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.product-card');
+                    const name = card.querySelector('.product-title').innerText;
+                    const image = card.querySelector('.product-image').getAttribute('src');
+                    
+                    // Narxni tozalash (so'm va bo'shliqlarni olib tashlash)
+                    const priceEl = card.querySelector('.product-price span') || card.querySelector('.product-price');
+                    const price = parseInt(priceEl.innerText.replace(/[^0-9]/g, '')) || 0;
+
+                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    const existingItem = cart.find(item => item.name === name);
+
+                    if (existingItem) {
+                        existingItem.quantity = (Number(existingItem.quantity) || 0) + 1;
+                    } else {
+                        cart.push({ name, price, image, quantity: 1 });
+                    }
+
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartCount();
+                    showToast(name); // Toastni chaqirish
+                });
+            });
+
+            // Birinchi marta yuklanganda savat sonini yangilash
+            updateCartCount();
+        });
+    </script>
+
+    <style>
+        /* Toast chiqib kelish animatsiyasi */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+
+
     <div class="toast-container" id="toastContainer"></div>
 </body>
 

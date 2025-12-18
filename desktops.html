@@ -9,6 +9,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
+        /* Dark Mode uchun asosiy o'zgaruvchilar */
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #333333;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --filter-border: #ddd;
+            --header-bg: #fff;
+        }
+
+        body.dark-mode {
+            --bg-body: #121212;
+            --text-main: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #1e1e1e;
+            --filter-border: #333;
+            --header-bg: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Dark Mode tugmasi stili */
+        #theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            outline: none;
+        }
+
         .catalog-layout {
             display: flex;
             padding: 30px 0;
@@ -23,23 +61,37 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-        /* Filterlar uchun asosiy stil */
         .filter-group {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--filter-border);
             border-radius: 8px;
+            background-color: var(--sidebar-bg);
         }
         .filter-group h4 {
             margin-top: 0;
             margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--filter-border);
             padding-bottom: 5px;
         }
         .filter-group label {
             display: block;
             margin-bottom: 5px;
             font-size: 14px;
+        }
+
+        /* Dark modeda input va selectlar */
+        select, input[type="text"], .slider {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--filter-border);
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--filter-border);
+            padding: 15px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -54,6 +106,10 @@
                 </div>
                 
                 <div class="header-actions">
+                    <button id="theme-btn" title="Rejimni o'zgartirish">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+
                     <div class="language-selector">
                         <button class="lang-btn active">UZ</button>
                         <button class="lang-btn">RU</button>
@@ -108,8 +164,8 @@
                 
                 <div class="filter-group">
                     <h4>Narx oralig'i</h4>
-                    <input type="range" min="3000000" max="40000000" value="3000000" class="slider" id="priceRange">
-                    <p>8 000 000 so'm gacha</p>
+                    <input type="range" min="3000000" max="40000000" value="3000000" class="slider" id="priceRange" style="width: 100%;">
+                    <p id="priceLabel">8 000 000 so'm gacha</p>
                 </div>
                 
                 <div class="filter-group">
@@ -121,7 +177,7 @@
                 
                 <div class="filter-group">
                     <h4>Videokarta</h4>
-                    <select name="gpu">
+                    <select name="gpu" style="width: 100%; padding: 5px;">
                         <option value="">Barchasi</option>
                         <option value="gtx1650">GTX 1650/RTX 3050</option>
                         <option value="rtx3060">RTX 3060/4060</option>
@@ -181,7 +237,7 @@
                         <a href="product-detail.html" class="btn btn-secondary quick-view">Batafsil</a>
                     </div>
                     
-                    </div>
+                </div>
                 
                 <div class="pagination-controls" style="text-align: center; margin-top: 30px;">
                     <button class="page-btn active">1</button>
@@ -245,7 +301,9 @@
             </div>
         </div>
     </footer>
+
     <script src="js/main.js"></script>
+    <script src="js/theme.js"></script>
     <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

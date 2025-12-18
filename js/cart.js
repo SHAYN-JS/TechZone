@@ -1,167 +1,111 @@
-// Savat funksiyalari
-
 class CartManager {
     constructor() {
         this.cart = JSON.parse(localStorage.getItem('cart')) || [];
-        // products ma'lumoti main.js dan keladi, shu sababli bu yerda mavjud deb hisoblaymiz
         this.init();
     }
 
     init() {
-        this.loadCartItems();
-        this.setupEventListeners();
-        this.updateCartSummary();
-        this.updateCartCount(); // Headerdagi savat sonini yangilash
+        this.renderCart();
+        this.updateCartCount();
     }
 
-    loadCartItems() {
-        // Savatdagi mahsulotlarni yuklash
-        const cartItemsContainer = document.getElementById('cartItemsContainer'); // ID'ni o'zgartirdik
-        if (!cartItemsContainer) return;
+    renderCart() {
+        const container = document.getElementById('cart-container');
+        const totalQtyEl = document.getElementById('total-qty');
+        const totalPriceEl = document.getElementById('total-price');
+        const navCartCount = document.getElementById('nav-cart-count');
+        
+        if (!container) return;
+
+        container.innerHTML = '';
+        let totalPrice = 0;
+        let totalQty = 0;
 
         if (this.cart.length === 0) {
-            cartItemsContainer.innerHTML = `
-                <div class="empty-cart" style="text-align: center; padding: 50px; grid-column: 1 / -1;">
-                    <h3>Savat bo'sh</h3>
-                    <p style="margin-bottom: 20px;">Hozircha savatingizda mahsulot yo'q</p>
-                    <a href="products.html" class="btn">Mahsulotlar sahifasiga o'tish</a>
-                </div>
-            `;
+            container.innerHTML = '<div class="text-center py-10 text-zinc-500">Savatchangiz bo\'sh 😕</div>';
+            if(totalQtyEl) totalQtyEl.innerText = '0';
+            if(totalPriceEl) totalPriceEl.innerText = '0 so\'m';
+            if(navCartCount) navCartCount.innerText = '0';
             return;
         }
 
-        // Mahsulotlarni sahifaga yuklash
-        cartItemsContainer.innerHTML = this.cart.map(item => this.createCartItemHTML(item)).join('');
+        this.cart.forEach((item, index) => {
+            // Xatolarni oldini olish: raqamga aylantirish
+            const price = Number(item.price) || 0;
+            const qty = Number(item.quantity) || 1;
+            const itemTotal = price * qty;
+
+            totalPrice += itemTotal;
+            totalQty += qty;
+
+            container.innerHTML += `
+                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex items-center gap-4 mb-4">
+                    <img src="${item.image}" class="w-16 h-16 rounded-lg bg-zinc-800 object-cover" onerror="this.src='https://via.placeholder.com/100'">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-white">${item.name}</h3>
+                        <p class="text-blue-500 text-sm font-bold">${this.formatPrice(price)} so'm</p>
+                    </div>
+                    <div class="flex items-center bg-black rounded-lg border border-zinc-700">
+                        <button onclick="cartManager.changeQty(${index}, -1)" class="px-3 py-1 hover:bg-zinc-800 text-white">-</button>
+                        <span class="px-3 font-bold text-blue-500">${qty}</span>
+                        <button onclick="cartManager.changeQty(${index}, 1)" class="px-3 py-1 hover:bg-zinc-800 text-white">+</button>
+                    </div>
+                    <button onclick="cartManager.removeItem(${index})" class="text-zinc-500 hover:text-red-500 ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        });
+
+        if(totalQtyEl) totalQtyEl.innerText = totalQty;
+        if(navCartCount) navCartCount.innerText = totalQty;
+        if(totalPriceEl) totalPriceEl.innerText = this.formatPrice(totalPrice) + " so'm";
     }
 
-    createCartItemHTML(item) {
-        const product = this.getProductById(item.id);
-        if (!product) return '';
-
-        // *** Mahsulotni qo'shish/olib tashlash tugmalari bilan to'liq savat elementi ***
-        return `
-            <div class="cart-item" data-product-id="${item.id}">
-                <div class="item-image">
-                    <img src="${product.image}" alt="${product.name}">
-                </div>
-                <div class="item-details">
-                    <a href="product.html?id=${item.id}">
-                        <h4 class="item-name">${product.name}</h4>
-                    </a>
-                    <p class="item-specs">${product.specs || ''}</p>
-                </div>
-                <div class="item-quantity">
-                    <button class="qty-btn remove-one" data-id="${item.id}" onclick="cartManager.changeQuantity('${item.id}', -1)">-</button>
-                    <input type="number" min="1" value="${item.quantity}" readonly>
-                    <button class="qty-btn add-one" data-id="${item.id}" onclick="cartManager.changeQuantity('${item.id}', 1)">+</button>
-                </div>
-                <div class="item-price">
-                    <span class="current-price">${this.formatPrice(product.price * item.quantity)} so'm</span>
-                </div>
-                <button class="item-remove" onclick="cartManager.removeItem('${item.id}')">
-                    ❌ O'chirish
-                </button>
-            </div>
-        `;
-    }
-
-    // Mahsulot miqdorini o'zgartirish
-    changeQuantity(productId, amount) {
-        const itemIndex = this.cart.findIndex(item => item.id === productId);
-
-        if (itemIndex > -1) {
-            const newQuantity = this.cart[itemIndex].quantity + amount;
-
-            if (newQuantity <= 0) {
-                // Agar miqdor 0 yoki undan kam bo'lsa, mahsulotni o'chiramiz
-                this.removeItem(productId);
-            } else {
-                this.cart[itemIndex].quantity = newQuantity;
-                this.saveCart();
-                this.loadCartItems();
-                this.updateCartSummary();
+    changeQty(index, delta) {
+        if (this.cart[index]) {
+            let currentQty = Number(this.cart[index].quantity) || 1;
+            let newQty = currentQty + delta;
+            
+            if (newQty > 0) {
+                this.cart[index].quantity = newQty;
+                this.save();
+                this.renderCart();
                 this.updateCartCount();
-                showToast(`Mahsulot miqdori ${amount > 0 ? 'oshirildi' : 'kamaytirildi'}!`, 'info');
+            } else {
+                this.removeItem(index);
             }
         }
     }
 
-    // Mahsulotni butunlay o'chirish
-    removeItem(productId) {
-        this.cart = this.cart.filter(item => item.id !== productId);
-        this.saveCart();
-        this.loadCartItems();
-        this.updateCartSummary();
+    removeItem(index) {
+        this.cart.splice(index, 1);
+        this.save();
+        this.renderCart();
         this.updateCartCount();
-        showToast('Mahsulot savatdan olib tashlandi!', 'error');
     }
 
-    setupEventListeners() {
-        // Savat sahifasiga oid boshqa voqealarni tinglash
+    save() {
+        localStorage.setItem('cart', JSON.stringify(this.cart));
     }
 
-    updateCartSummary() {
-        // Jami summani hisoblash
-        const subtotal = this.cart.reduce((sum, item) => {
-            const product = this.getProductById(item.id);
-            return sum + (product ? product.price * item.quantity : 0);
-        }, 0);
-
-        const deliveryCost = subtotal > 10000000 ? 0 : 35000; // 10mlndan yuqori bepul
-        const total = subtotal + deliveryCost;
-
-        const summaryElements = {
-            subtotal: document.getElementById('subtotal'),
-            delivery: document.getElementById('deliveryCost'),
-            total: document.getElementById('totalPrice')
-        };
-
-        if (summaryElements.subtotal) {
-            summaryElements.subtotal.textContent = `${this.formatPrice(subtotal)} so'm`;
-            summaryElements.delivery.textContent = `${this.formatPrice(deliveryCost)} so'm`;
-            summaryElements.total.textContent = `${this.formatPrice(total)} so'm`;
-        }
-    }
-
-    proceedToCheckout() {
-        if (this.cart.length === 0) {
-            showToast('Savat bo\'sh!', 'warning');
-            return;
-        }
-
-        // To'lov sahifasiga o'tish
-        alert("To'lov sahifasiga yo'naltirilmoqda...");
-        // window.location.href = 'checkout.html';
-    }
-
-    getProductById(productId) {
-        // Barcha mahsulotlarni birlashtirish (main.js dagi products global o'zgaruvchisidan foydalanish)
-        if (window.products) {
-            const allProducts = [...window.products.discount, ...window.products.bestsellers];
-            return allProducts.find(product => product.id === productId);
-        }
-        return null;
+    updateCartCount() {
+        const count = this.cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+        const badge = document.getElementById('cartCount') || document.getElementById('nav-cart-count');
+        if (badge) badge.textContent = count;
     }
 
     formatPrice(price) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
-
-    saveCart() {
-        localStorage.setItem('cart', JSON.stringify(this.cart));
-    }
-
-    updateCartCount() {
-        const totalItems = this.cart.reduce((sum, item) => sum + item.quantity, 0);
-        const cartCountElements = document.querySelectorAll('.cart-count');
-        
-        cartCountElements.forEach(element => {
-            element.textContent = totalItems;
-        });
-    }
 }
 
-// Global ishga tushirish
-const products = window.products; // main.js dan kelgan products o'zgaruvchisini olish uchun
 const cartManager = new CartManager();
-window.cartManager = cartManager;
+
+// Savatni tozalash global funksiyasi
+window.clearCart = () => {
+    if (confirm("Savatchani tozalamoqchimisiz?")) {
+        localStorage.removeItem('cart');
+        location.reload();
+    }
+};
