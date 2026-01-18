@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solishtirish - TechZone</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            background: var(--premium-dark-card);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--premium-dark-border);
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--premium-dark-border);
+        }
+
+        .compare-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 700;
+            color: var(--premium-primary);
+        }
+
+        .compare-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+                <h1 class="glow-text">MAHSULOTLARNI SOLISHTIRISH</h1>
+            </div>
+
+            <div id="compareContent">
+                <!-- Data will be loaded via JS -->
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="products.html" class="btn btn-secondary">Yana mahsulot qo'shish</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('compareContent');
+            const compare = JSON.parse(localStorage.getItem('compare')) || [];
+
+            if (compare.length === 0) {
+                content.innerHTML = '<div style="text-align:center; padding: 100px;"><h2>Solishtirish uchun mahsulot tanlanmagan</h2></div>';
+            } else {
+                let html = '<table class="compare-table"><thead><tr><th>Xususiyat</th>';
+                compare.forEach(item => {
+                    html += `<th>
+                        <img src="${item.image}" class="compare-image"><br>
+                        ${item.name}
+                    </th>`;
+                });
+                html += '</tr></thead><tbody>';
+
+                // Specs (simple split for demo)
+                html += '<tr><td>Xususiyatlari</td>';
+                compare.forEach(item => {
+                    html += `<td>${item.specs || 'N/A'}</td>`;
+                });
+                html += '</tr>';
+
+                html += '<tr><td>Amallar</td>';
+                compare.forEach(item => {
+                    html += `<td><button class="btn btn-primary btn-sm">Savatga</button></td>`;
+                });
+                html += '</tr></tbody></table>';
+
+                content.innerHTML = html;
+            }
+        });
+    </script>
+</body>
+
+</html>

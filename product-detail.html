@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahsulot tafsilotlari | TechZone</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        .product-gallery {
+            position: sticky;
+            top: 100px;
+        }
+
+        .main-img-container {
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            max-height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .main-img-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            background: rgba(15, 15, 15, 0.6);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        #productName {
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3.5rem;
+        }
+
+        #productDescription {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .spec-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(10px);
+        }
+
+        .spec-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .floating-buy {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 20px 40px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Optimizations for Product Detail */
+        @media (max-width: 768px) {
+            .container {
+                padding-top: 40px;
+            }
+
+            #productName {
+                font-size: 2.2rem !important;
+            }
+
+            .product-gallery {
+                position: relative;
+                top: 0;
+                margin-bottom: 30px;
+            }
+
+            .main-img-container {
+                max-height: 350px;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-buy {
+                padding: 15px;
+                border-radius: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-top: 1px solid var(--glass-border);
+            }
+
+            .floating-buy .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark-mode">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechZone</a>
+                <div class="header-actions">
+                    <a href="cart.html" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <!-- GALLERY -->
+            <div class="product-gallery">
+                <div class="main-img-container glass-card">
+                    <img id="productImage" src="images/asus rog.jfif" alt="Product Name">
+                </div>
+            </div>
+
+            <!-- INFO -->
+            <div class="product-info">
+                <nav class="breadcrumb text-sm text-zinc-500 mb-5">
+                    <a href="index.html">Bosh sahifa</a> / <a href="products.html">Katalog</a> / <span
+                        id="currentCategory" class="text-zinc-300">Noutbuklar</span>
+                </nav>
+
+                <h1 id="productName" class="text-5xl font-extrabold mb-5 leading-tight">Asus ROG Strix G15 Gaming Laptop
+                </h1>
+
+                <div class="rating flex items-center gap-2 mb-8">
+                    <div class="stars text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-zinc-400">(124 sharhlar)</span>
+                </div>
+
+                <div id="productPrice" class="price-tag glow-text">14 500 000 so'm</div>
+
+                <p id="productDescription" class="text-zinc-400 text-lg mb-10 leading-relaxed">
+                    NVIDIA® GeForce RTX™ 4060 videokartasi va Intel® Core™ i7 protsessori bilan jihozlangan ushbu
+                    noutbuk eng og'ir o'yinlar va professional dasturlar uchun mo'ljallangan. 165Hz displey va RGB
+                    klaviatura sizga unutilmas tajriba beradi.
+                </p>
+
+                <div class="specs-grid">
+                    <h3 class="text-xl font-bold mb-5">Texnik xususiyatlari:</h3>
+                    <div class="spec-item">
+                        <div class="spec-icon"><i class="fas fa-microchip"></i></div>
+                        <div>
+                            <div class="font-bold">Protsessor</div>
+                            <div class="text-zinc-500 text-sm">Intel Core i7-13650HX</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon"><i class="fas fa-memory"></i></div>
+                        <div>
+                            <div class="font-bold">RAM (Tezkor xotira)</div>
+                            <div class="text-zinc-500 text-sm">16GB DDR5 4800MHz</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon"><i class="fas fa-hdd"></i></div>
+                        <div>
+                            <div class="font-bold">SSD (Xotira)</div>
+                            <div class="text-zinc-500 text-sm">512GB NVMe PCIe 4.0</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon"><i class="fas fa-desktop"></i></div>
+                        <div>
+                            <div class="font-bold">Videokarta</div>
+                            <div class="text-zinc-500 text-sm">NVIDIA GeForce RTX 4060 8GB</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions mt-12 flex gap-5">
+                    <button class="btn btn-primary btn-lg flex-1 add-to-cart" style="padding: 20px; font-size: 1.2rem;">
+                        <i class="fas fa-cart-plus mr-2"></i> Savatga qo'shish
+                    </button>
+                    <button class="btn btn-secondary btn-lg" style="width: 70px;">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FLOATING UI -->
+    <div class="floating-buy">
+        <div class="hidden md:block">
+            <div class="text-xs text-zinc-500">Narxi:</div>
+            <div class="font-bold text-xl">14 500 000 so'm</div>
+        </div>
+        <button class="btn btn-primary add-to-cart">
+            <i class="fas fa-bolt mr-2"></i> Hozir sotib olish
+        </button>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/products-data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const product = productsData[id];
+
+            if (product) {
+                // Update UI elements
+                document.title = `${product.name} | TechZone`;
+                document.getElementById('productName').innerText = product.name;
+                document.getElementById('productImage').src = product.image;
+                document.getElementById('productPrice').innerText = product.price;
+                document.getElementById('productDescription').innerText = product.description;
+                document.getElementById('currentCategory').innerText = product.category;
+
+                // Update Floating UI
+                const floatingPrice = document.querySelector('.floating-buy .text-xl');
+                if (floatingPrice) floatingPrice.innerText = product.price;
+
+                // Update Specs
+                const specsGrid = document.querySelector('.specs-grid');
+                let specsHTML = '<h3 class="text-xl font-bold mb-5">Texnik xususiyatlari:</h3>';
+
+                for (const [key, value] of Object.entries(product.specs)) {
+                    let icon = 'microchip';
+                    if (key === 'ram' || key === 'memory') icon = 'memory';
+                    if (key === 'storage' || key === 'capacity') icon = 'hdd';
+                    if (key === 'gpu' || key === 'vram') icon = 'desktop';
+                    if (key === 'display' || key === 'panel') icon = 'tv';
+                    if (key === 'processor') icon = 'microchip';
+
+                    specsHTML += `
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class="fas fa-${icon}"></i></div>
+                            <div>
+                                <div class="font-bold">${key.toUpperCase()}</div>
+                                <div class="text-zinc-500 text-sm">${value}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                specsGrid.innerHTML = specsHTML;
+            } else {
+                // Return to home if product not found
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

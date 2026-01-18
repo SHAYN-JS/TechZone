@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanlanganlar - TechZone</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header id="mainHeader"></header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+                <h1 class="glow-text" style="font-size: 3rem;">SEVIMLI MAHSULOTLAR</h1>
+                <p style="color: var(--premium-text-secondary);">Sizga yoqqan va keyinroq sotib olmoqchi bo'lgan
+                    mahsulotlaringiz.</p>
+            </div>
+
+            <div id="wishlistGrid" class="products-grid">
+                <!-- Wishlist items dynamically loaded here -->
+            </div>
+
+            <div id="emptyWishlist" style="display: none; text-align: center; padding: 100px 0;">
+                <i class="far fa-heart"
+                    style="font-size: 80px; color: var(--premium-primary); margin-bottom: 20px; opacity: 0.5;"></i>
+                <h2>Tanlanganlar ro'yxati bo'sh</h2>
+                <p>Hali hech qanday mahsulotni sevimli deb belgimadingiz.</p>
+                <a href="products.html" class="btn btn-primary" style="margin-top: 20px;">Xaridni boshlash</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('wishlistGrid');
+            const empty = document.getElementById('emptyWishlist');
+            const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+            if (wishlist.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+            } else {
+                wishlist.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <button class="add-to-wishlist active" style="top: 15px; right: 15px;"><i class="fas fa-heart"></i></button>
+                        <img src="${item.image}" alt="${item.name}" class="product-image">
+                        <h4 class="product-title">${item.name}</h4>
+                        <p class="product-price">${item.price}</p>
+                        <div class="product-actions mt-4 flex flex-col gap-2">
+                            <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
+                            <button class="btn btn-secondary remove-wishlist" onclick="removeFromWishlist('${item.name}')">O'chirish</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        });
+
+        function removeFromWishlist(name) {
+            let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            wishlist = wishlist.filter(item => item.name !== name);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
