@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<!-- 
+    TechZone - Qidiruv Natijalari
+    Foydalanuvchi qidirgan mahsulotlarni premium formatda ko'rsatish
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qidiruv natijalari | TechZone</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="dark-mode">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechZone</a>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Mahsulotlarni qayta qidirish...">
+                </div>
+                <div class="header-actions">
+                    <a href="cart.html" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-10">
+        <div class="section-header mb-10">
+            <h1 class="section-title"><i class="fas fa-search"></i> Qidiruv natijalari</h1>
+            <p id="searchQueryText" class="text-zinc-400 mt-2">Sizning so'rovingiz bo'yicha natijalar:</p>
+        </div>
+
+        <!-- SKELETON LOADERS (Loading paytida ko'rinadi) -->
+        <div id="searchLoader" class="products-grid">
+            <div class="product-card skeleton" style="height: 400px;"></div>
+            <div class="product-card skeleton" style="height: 400px;"></div>
+            <div class="product-card skeleton" style="height: 400px;"></div>
+        </div>
+
+        <!-- SEARCH RESULTS GRID -->
+        <div id="searchResults" class="products-grid" style="display: none;">
+            <!-- Natijalar JS orqali qo'shiladi -->
+        </div>
+
+        <div id="noResults" class="text-center py-20" style="display: none;">
+            <i class="fas fa-search-minus text-6xl text-zinc-700 mb-5"></i>
+            <h2 class="text-2xl font-bold">Hech narsa topilmadi</h2>
+            <p class="text-zinc-400 mt-2">Boshqa so'zlar bilan qidirib ko'ring yoki katalogimizni ko'ring.</p>
+            <a href="products.html" class="btn btn-primary mt-8">Katalogni ko'rish</a>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/particles.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q');
+            const resultsContainer = document.getElementById('searchResults');
+            const loader = document.getElementById('searchLoader');
+            const noResults = document.getElementById('noResults');
+            const queryText = document.getElementById('searchQueryText');
+
+            if (query) {
+                queryText.innerHTML = `Siz <b>"${query}"</b> bo'yicha qidirdingiz:`;
+                document.title = `"${query}" bo'yicha qidiruv | TechZone`;
+
+                // Qidiruv simulyatsiyasi (ma'lumotlar bazasi yo'qligi sababli)
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    resultsContainer.style.display = 'grid';
+
+                    // Demo natijalar (query asosida filterlash simulyatsiyasi)
+                    const demoProducts = [
+                        { name: "Asus ROG Strix G15", price: "14 500 000 so'm", img: "images/asus rog.jfif", specs: "i7 | 16GB | RTX 4060" },
+                        { name: "Samsung Odyssey G7", price: "5 800 000 so'm", img: "images/samsung.jfif", specs: "32\" | 240Hz | QHD" },
+                        { name: "RTX 4070 Founders Edition", price: "9 999 000 so'm", img: "images/3060.jfif", specs: "12GB VRAM | NVIDIA" }
+                    ];
+
+                    const filtered = demoProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+
+                    if (filtered.length > 0) {
+                        filtered.forEach(p => {
+                            const card = document.createElement('div');
+                            card.className = 'product-card';
+                            card.innerHTML = `
+                                <img src="${p.img}" alt="${p.name}" class="product-image">
+                                <h4 class="product-title">${p.name}</h4>
+                                <p class="product-specs">${p.specs}</p>
+                                <p class="product-price">${p.price}</p>
+                                <button class="btn btn-primary add-to-cart">Savatga qo'shish</button>
+                            `;
+                            resultsContainer.appendChild(card);
+                        });
+                    } else {
+                        resultsContainer.style.display = 'none';
+                        noResults.style.display = 'block';
+                    }
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+
+</html>

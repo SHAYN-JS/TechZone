@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Builder - TechZone</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header id="mainHeader"></header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+                <h1 class="glow-text">KOMPYUTER YIG'ISH</h1>
+                <p style="color: var(--premium-text-secondary);">O'zingizga mos va mos keladigan qismlarni tanlang.</p>
+            </div>
+
+            <div class="builder-layout">
+                <!-- Left: Steps -->
+                <div class="builder-steps">
+                    <div class="builder-step glass-card" data-category="cpu">
+                        <div class="step-info">
+                            <div class="step-icon"><i class="fas fa-microchip"></i></div>
+                            <div>
+                                <h3>Protsessor (CPU)</h3>
+                                <p class="selected-text">Tanlanmagan</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm select-btn">Tanlash</button>
+                    </div>
+
+                    <div class="builder-step glass-card" data-category="gpu">
+                        <div class="step-info">
+                            <div class="step-icon"><i class="fas fa-video"></i></div>
+                            <div>
+                                <h3>Videokarta (GPU)</h3>
+                                <p class="selected-text">Tanlanmagan</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm select-btn">Tanlash</button>
+                    </div>
+
+                    <div class="builder-step glass-card" data-category="ram">
+                        <div class="step-info">
+                            <div class="step-icon"><i class="fas fa-memory"></i></div>
+                            <div>
+                                <h3>Operativ xotira (RAM)</h3>
+                                <p class="selected-text">Tanlanmagan</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm select-btn">Tanlash</button>
+                    </div>
+
+                    <div class="builder-step glass-card" data-category="storage">
+                        <div class="step-info">
+                            <div class="step-icon"><i class="fas fa-hdd"></i></div>
+                            <div>
+                                <h3>Xotira (SSD/HDD)</h3>
+                                <p class="selected-text">Tanlanmagan</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm select-btn">Tanlash</button>
+                    </div>
+                </div>
+
+                <!-- Right: Summary Sidebar -->
+                <div class="builder-summary-card glass-card"
+                    style="padding: 30px; position: sticky; top: 100px; height: fit-content;">
+                    <h2 style="margin-bottom: 20px;">Sizning PC</h2>
+                    <ul id="summaryList"
+                        style="list-style: none; margin-bottom: 25px; border-bottom: 1px solid var(--premium-dark-border); padding-bottom: 20px;">
+                        <li style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Jami:</span>
+                            <b id="totalPrice">0 so'm</b>
+                        </li>
+                    </ul>
+                    <button id="addAllToCart" class="btn btn-primary w-full" disabled>Barcha qismlarni savatga
+                        qo'shish</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Selection Modal (Simplified for demo) -->
+    <div id="selectionModal" class="sidebar-overlay">
+        <div class="glass-card"
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; padding: 30px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h3 id="modalTitle">Qismni tanlang</h3>
+                <button id="closeModal"
+                    style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div id="modalList" class="flex flex-col gap-3">
+                <!-- Items list dynamic -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/pc-builder.js"></script>
+</body>
+
+</html>
